@@ -65,24 +65,69 @@ final_processed_df = df[
         "is_pb",
         "punctuation",
         "numbers",
+        "test_id",
     ]
 ]
 engine = create_engine("postgresql+psycopg2://postgres@localhost/postgres") # for copying the dataframe to the table 
 
 # append into table
-final_processed_df.to_sql(
-    "typing_tests",
-    con=engine,
-    if_exists='append',
-    index=False
-)
+try:
+    temp_table = "temp_typing_tests"
 
-print("Data inserted successfully.")
+    # push dataframe to temp table first
+    final_processed_df.to_sql(
+        temp_table,
+        con=engine,
+        if_exists="replace",
+        index=False
+    )
+##APPROACH TO SEND DATA TO DB WITHOUT DUPLICATES
+# WE HAVE TO USE THE ON CONFLICT DO NOTHING ..CLAUSE OF PSOTGRE BECAUSE A SIMPLE .COPY WOULD THROUGH ERROR AND STOP THE TRANSFER, SO
+# WE ARE CREATING A TEMPORARY TABLE AND THEN COPYING FROM THIS SO THAT WE CAN USE THAT POSTGRE QUERY
+    insert_sql = f"""
+    INSERT INTO typing_tests (
+        user_id,
+        test_time,
+        wpm,
+        raw_wpm,
+        accuracy,
+        consistency,
+        correct_chars,
+        incorrect_chars,
+        extra_chars,
+        missed_chars,
+        test_duration,
+        mode,
+        mode2,
+        quote_length,
+        language,
+        difficulty,
+        is_pb,
+        punctuation,
+        numbers,
+        test_id
+    )
+    SELECT *
+    FROM {temp_table}
+    ON CONFLICT (test_id) DO NOTHING;
+    """
+
+    cur.execute(insert_sql)
+    conn.commit()
+
+    # delete temp table
+    cur.execute(f"DROP TABLE IF EXISTS {temp_table}")
+    conn.commit()
+    print("New tests inserted. Duplicates skipped safely.")
+except Exception as e:
+    print("DB ERROR:", e)
+    conn.rollback()
+
 try:
     final_processed_df.to_csv("processed_data/processed_data.csv")
     print("processed csv saved sucessfully")
 except Exception as e:
     print(e)
 #close the db
-# cur.close()
-# conn.close()
+cur.close()
+conn.close()

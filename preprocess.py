@@ -1,7 +1,7 @@
 import pandas as pd
 
 
-csv_path="/home/akshajtiwari/Downloads/results.csv"
+csv_path="/home/akshajtiwari/Desktop/typing_predictor/raw_data/results.csv"
 
 def pre_process_csv(csv_path):
 
@@ -11,7 +11,7 @@ def pre_process_csv(csv_path):
         return df
 
     def drop_columns(df):
-        df.drop(columns=['afkDuration','restartCount','incompleteTestSeconds', 'funbox', 'lazyMode', 'blindMode','bailedOut', 'tags','_id'],inplace=True)
+        df.drop(columns=['afkDuration','restartCount','incompleteTestSeconds', 'funbox', 'lazyMode', 'blindMode','bailedOut', 'tags'],inplace=True)
         return df 
     
     def remove_nan(df):
@@ -47,7 +47,8 @@ def pre_process_csv(csv_path):
             "acc": "accuracy",
             "isPb": "is_pb",
             "quoteLength": "quote_length",
-            "testDuration": "test_duration"
+            "testDuration": "test_duration",
+            "_id": "test_id"
         }, inplace=True)
         return df
 
