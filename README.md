@@ -31,6 +31,20 @@ It demonstrates real-world engineering skills:
 
 ---
 
+#  Why This Project Matters
+
+This project demonstrates:
+
+✔ Data engineering pipeline  
+✔ Backend system design  
+✔ Database schema design  
+✔ ML model lifecycle  
+✔ Model persistence  
+✔ End-to-end system thinking  
+✔ Entire Codebase is handwritten , no LLM/GPT's have been used to write or debug code. 
+
+---
+
 #  System Architecture
 
 ##  Invocation Architecture (How components interact)
@@ -206,19 +220,7 @@ Future UI | React |
 
 ---
 
-#  Why This Project Matters
 
-This project demonstrates:
-
-✔ Data engineering pipeline  
-✔ Backend system design  
-✔ Database schema design  
-✔ ML model lifecycle  
-✔ Model persistence  
-✔ End-to-end system thinking  
-✔ Entire Codebase is handwritten , no LLM/GPT's have been used to write or debug code. 
-
----
 
 #  Planned Enhancements
 
