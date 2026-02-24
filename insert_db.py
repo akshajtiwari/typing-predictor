@@ -131,3 +131,4 @@ except Exception as e:
 #close the db
 cur.close()
 conn.close()
+print("DB insertion complete")

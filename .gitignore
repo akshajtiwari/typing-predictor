@@ -3,3 +3,4 @@ __pycache__
 downloaded_files/.ipynb_checkpoints
 raw_data/*
 processed_data/*
+models/*
