@@ -23,7 +23,7 @@ This project is a complete **end-to-end machine learning pipeline** that:
 - Trains a per-user prediction model  
 - Forecasts future typing speed  
 
-The system is designed as a **realistic backend + ML engineering project**, focusing on pipeline design, database modeling, and model lifecycle rather than UI.
+The system is designed as a **realistic backend + ML engineering project**, focusing on learning tools like **Selenium** and **PostgreSQL** and  creating a basic end to end ML system.
 
 > This repository represents the completed core pipeline.  
 > Future enhancements are listed below but are not required for functionality.
