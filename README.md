@@ -1,14 +1,13 @@
 <div align="center">
 
-#  MonkeyType Typing Speed Prediction System
+# ⌨ MonkeyType Typing Speed Prediction System
 
 ### End-to-End Data Engineering + ML Pipeline for Typing Performance Forecasting
 
 ![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-blue)
-![FastAPI](https://img.shields.io/badge/FastAPI-Backend-green)
 ![ML](https://img.shields.io/badge/Machine%20Learning-Scikit--Learn-orange)
-![Status](https://img.shields.io/badge/Status-In%20Development-yellow)
+![Status](https://img.shields.io/badge/Status-Completed%20(Core%20Pipeline)-brightgreen)
 
 </div>
 
@@ -16,18 +15,18 @@
 
 ##  Overview
 
-This project is a **complete end-to-end ML system** that collects MonkeyType typing data, processes it, stores it in PostgreSQL, trains a prediction model per user, and forecasts future typing speed.
+This project is a complete **end-to-end machine learning pipeline** that:
 
-It demonstrates real-world engineering skills:
+- Collects MonkeyType typing history  
+- Cleans and preprocesses raw CSV data  
+- Stores structured data in PostgreSQL  
+- Trains a per-user prediction model  
+- Forecasts future typing speed  
 
-- Data ingestion pipeline  
-- Data preprocessing & validation  
-- Relational database design  
-- ML model training & persistence  
-- Backend system architecture  
-- Prediction system  
+The system is designed as a **realistic backend + ML engineering project**, focusing on pipeline design, database modeling, and model lifecycle rather than UI.
 
-> Designed as a flagship backend + ML portfolio project.
+> This repository represents the completed core pipeline.  
+> Future enhancements are listed below but are not required for functionality.
 
 ---
 
@@ -35,102 +34,81 @@ It demonstrates real-world engineering skills:
 
 This project demonstrates:
 
-✔ Data engineering pipeline  
-✔ Backend system design  
-✔ Database schema design  
-✔ ML model lifecycle  
-✔ Model persistence  
-✔ End-to-end system thinking  
-✔ Entire Codebase is handwritten , no LLM/GPT's have been used to write or debug code. 
+✔ End-to-end data pipeline design  
+✔ Real database schema & relations  
+✔ Automated ingestion + preprocessing  
+✔ Model training & persistence  
+✔ Prediction system design  
+✔ Modular codebase structure  
+✔ System-level engineering thinking  
+
+> Entire codebase written manually without LLM-generated code for implementation or debugging.
 
 ---
 
 #  System Architecture
 
-##  Invocation Architecture (How components interact)
+## Invocation Structure (Current Implementation)
 
 <div align="center">
 
 ```
             ┌──────────────┐
-            │   Frontend   │  (CLI / future UI)
-            └──────┬───────┘
-                   │ HTTP/CLI
-                   ▼
-            ┌──────────────┐
-            │   FastAPI    │
-            │  (API Layer) │
+            │    CLI App   │
             └──────┬───────┘
                    │
-        ┌──────────┴──────────┐
-        ▼                     ▼
-┌──────────────┐      ┌──────────────┐
-│ PostgreSQL   │      │ Background   │
-│ (Database)   │      │ Worker       │
-└──────────────┘      └──────┬───────┘
-                               │
-                               ▼
-                        ┌──────────────┐
-                        │   ML Model   │
-                        │ Train/Save   │
-                        └──────────────┘
+                   ▼
+            ┌──────────────┐
+            │   Scraper    │
+            │ (Selenium)   │
+            └──────┬───────┘
+                   │
+                   ▼
+            ┌──────────────┐
+            │ Preprocessing│
+            │   Pipeline   │
+            └──────┬───────┘
+                   │
+                   ▼
+            ┌──────────────┐
+            │ PostgreSQL   │
+            │ users/tests  │
+            └──────┬───────┘
+                   │
+                   ▼
+            ┌──────────────┐
+            │ ML Training  │
+            │ Polynomial   │
+            └──────┬───────┘
+                   │
+                   ▼
+            ┌──────────────┐
+            │ Prediction   │
+            │ (Future WPM) │
+            └──────────────┘
 ```
 
 </div>
-
-### Component Responsibilities
-
-| Component | Responsibility |
-|-----------|---------------|
-Frontend / CLI | User input, upload CSV, view predictions |
-FastAPI | API layer, validation, triggers processing |
-Worker | Preprocess → DB insert → Train → Predict |
-PostgreSQL | Stores users & typing history |
-ML Model | Trains per user & predicts future speed |
 
 ---
 
-#  Data Pipeline Architecture
+# Data Pipeline
 
 <div align="center">
 
 ```
-            ┌──────────────────┐
-            │      USER        │
-            └─────────┬────────┘
-                      │
-                      ▼
-            ┌──────────────────┐
-            │     Scraper      │
-            │  Downloads CSV   │
-            └─────────┬────────┘
-                      │
-                      ▼
-            ┌──────────────────┐
-            │  Preprocessing   │
-            │ Clean + Transform│
-            └─────────┬────────┘
-                      │
-                      ▼
-            ┌──────────────────┐
-            │   PostgreSQL     │
-            │  users + tests   │
-            └─────────┬────────┘
-                      │
-                      ▼
-            ┌──────────────────┐
-            │   ML Training    │
-            │ per user model   │
-            └─────────┬────────┘
-                      │
-                      ▼
-            ┌──────────────────┐
-            │   Prediction     │
-            │ Future speed     │
-            └──────────────────┘
+User → Scraper → CSV → Preprocessing → PostgreSQL → Model Training → Prediction
 ```
 
 </div>
+
+### Pipeline Stages
+
+1. Scrape MonkeyType typing history  
+2. Clean and normalize dataset  
+3. Store structured data in PostgreSQL  
+4. Train polynomial regression model  
+5. Predict future typing performance  
 
 ---
 
@@ -147,10 +125,8 @@ CREATE TABLE users (
 );
 ```
 
----
-
-##  Typing Tests Table
-Each row = one typing test.
+## Typing Tests Table
+Each row represents one typing test.
 
 ```sql
 CREATE TABLE typing_tests (
@@ -183,64 +159,86 @@ CREATE TABLE typing_tests (
 );
 ```
 
-
+**Relationship:**  
+One user → Many typing tests  
+`users.id → typing_tests.user_id`
 
 ---
 
+#  Model Approach
 
+Model: Polynomial Regression (Time-based)
+
+The model learns:
+
+```
+typing_speed = f(time)
+```
+
+It captures:
+- improvement trends  
+- plateau behavior  
+- long-term typing growth  
+
+Prediction:
+- future WPM after X months  
+- based purely on historical trend  
+
+---
 
 #  Project Structure
 
 ```
-monkeytype-ml/
+typing-predictor/
 
-├── preprocess.py        # preprocessing pipeline
-├── scraper.py           # CSV scraper
-├── db_insert.py         # database insertion
-├── trainer.py           # ML training
-├── predictor.py         # prediction logic
+├── main.py              # main pipeline controller
+├── login.py             # monkeytype scraper
+├── preprocess.py        # data cleaning pipeline
+├── insert_db.py         # database insertion
+├── model.py             # training + prediction
 │
-├── models/              # saved models
-├── data/                # raw CSVs
+├── raw_data/
+├── downloaded_files/
+├── models/
 └── README.md
 ```
 
 ---
 
-#  Tech Stack
+# 🛠️Tech Stack
 
 | Category | Tools |
 |----------|------|
 Language | Python |
 Database | PostgreSQL |
-Backend | FastAPI |
 ML | Scikit-learn |
+Automation | Selenium |
 Data | Pandas |
-Future UI | React |
 
 ---
 
+#  Future Enhancements (Optional)
 
+These are **ideas for future expansion**, not required for current functionality:
 
-#  Planned Enhancements
-
-- FastAPI endpoints  
-- Frontend dashboard  
-- Graph visualization  
-- Model comparison  
-- Docker deployment  
-- Async background worker  
+- FastAPI backend for API-based predictions  
+- Frontend dashboard with graphs  
+- Multi-user prediction comparison  
+- Model comparison (Linear vs Poly vs ARIMA)  
+- Dockerized deployment  
+- Cloud hosting  
 
 ---
 
-#  Author
+# Author
 
 **Akshaj Tiwari**  
-Backend • Machine Learning • Full Systems  
+Backend • Machine Learning • Systems Engineering  
 
 ---
+
 <div align="center">
 
-### ⭐ If you like this project, consider starring the repo
+### ⭐ If you found this project interesting, consider starring the repository
 
 </div>
